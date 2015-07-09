@@ -9,8 +9,6 @@ Some commandlinefu oneliners I find myself using regularly.
 ```
 git remote prune origin --dry-run
 git branch --remote --merged origin/develop \
-    | grep -v master \
-    | grep -v develop \
-    | sed 's/origin\///' \
+    | grep -v master | grep -v develop | sed 's/origin\///' \
     | xargs git push origin --delete --dry-run
 ```
