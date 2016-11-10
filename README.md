@@ -12,3 +12,9 @@ git branch --remote --merged origin/develop \
     | grep -v master | grep -v develop | sed 's/origin\///' \
     | xargs git push origin --delete --dry-run
 ```
+
+### remove orphaned docker volumes
+
+```
+docker volume ls -qf dangling=true | xargs -r docker volume rm
+```
