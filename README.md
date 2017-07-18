@@ -8,7 +8,9 @@ Some commandlinefu oneliners I find myself using regularly.
 
 ``` shell
 # stuff I like to install
-brew install vim coreutils findutils gnu-tar gnu-sed gnupg rename tmux tree watch --with-default-names
+brew install \
+  vim coreutils findutils gnu-tar gnu-sed gnupg rename tmux tree watch \
+  --with-default-names
 ```
 
 ### git
@@ -16,8 +18,8 @@ brew install vim coreutils findutils gnu-tar gnu-sed gnupg rename tmux tree watc
 ``` shell
 # delete branches that have been merged into origin/develop
 git branch --remote --merged origin/develop \
-    | grep -v master | grep -v develop | sed 's/origin\///' \
-    | xargs --no-run-if-empty git push origin --delete --dry-run
+  | grep -v master | grep -v develop | sed 's/origin\///' \
+  | xargs --no-run-if-empty git push origin --delete --dry-run
 ```
 
 ### docker
