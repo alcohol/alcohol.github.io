@@ -4,9 +4,16 @@
 
 Some commandlinefu oneliners I find myself using regularly.
 
+### homebrew
+
+``` shell
+# stuff I like to install
+brew install vim coreutils findutils gnu-tar gnu-sed gnupg rename tmux tree watch --with-default-names
+```
+
 ### git
 
-```shell
+``` shell
 # delete branches that have been merged into origin/develop
 git branch --remote --merged origin/develop \
     | grep -v master | grep -v develop | sed 's/origin\///' \
@@ -15,7 +22,7 @@ git branch --remote --merged origin/develop \
 
 ### docker
 
-```shell
+``` shell
 # remove all stopped containers
 docker ps -aq | xargs --no-run-if-empty docker rm
 
