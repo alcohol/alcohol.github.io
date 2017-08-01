@@ -37,3 +37,13 @@ docker volume ls | awk '/^local/ { print $2 }' | xargs --no-run-if-empty docker 
 # delete untagged images
 docker images --filter dangling=true -q | xargs --no-run-if-empty docker rmi
 ```
+
+### ansible
+
+``` shell
+vimdiff \
+  <(ansible-vault view --vault-password-file=.vault_password \
+    <(git show origin/master:inventory/group_vars/production/secrets)) \
+  <(ansible-vault view --vault-password-file=.vault_password \
+    <(git show origin/develop:inventory/group_vars/production/secrets))
+```
