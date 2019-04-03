@@ -1,8 +1,6 @@
 # alcohol.github.io
 
-## commandlinefu
-
-Some commandlinefu oneliners I find myself using regularly.
+Some randomly collected snippets
 
 ### homebrew
 
@@ -16,34 +14,29 @@ brew install \
 ### git
 
 ``` shell
-# delete branches that have been merged into origin/develop
+# delete branches that have been merged into origin/develop (excluding develop/master)
 git branch --remote --merged origin/develop \
   | grep -v master | grep -v develop | sed 's/origin\///' \
   | xargs --no-run-if-empty git push origin --delete --dry-run
 ```
 
-### docker
-
-``` shell
-# remove all stopped containers
-docker ps -aq | xargs --no-run-if-empty docker rm
-
-# remove all unused volumes
-docker volume ls -q | xargs --no-run-if-empty docker volume rm
-
-# remove local volumes  
-docker volume ls | awk '/^local/ { print $2 }' | xargs --no-run-if-empty docker volume rm
-
-# delete untagged images
-docker images --filter dangling=true -q | xargs --no-run-if-empty docker rmi
-```
-
 ### ansible
 
 ``` shell
+# be able to diff vault files
 vimdiff \
   <(ansible-vault view --vault-password-file=.vault_password \
     <(git show origin/master:inventory/group_vars/production/secrets)) \
   <(ansible-vault view --vault-password-file=.vault_password \
     <(git show origin/develop:inventory/group_vars/production/secrets))
+```
+
+### jenkins
+
+``` groovy
+// decrypt a secretbytes string (ssh-key/file credential)
+println(new String(com.cloudbees.plugins.credentials.SecretBytes.fromString(secret).getPlainData(), "ASCII"))
+
+// decrypt a regular secret
+println(hudson.util.Secret.fromString(secret).getPlainText())
 ```
