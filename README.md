@@ -40,3 +40,19 @@ println(new String(com.cloudbees.plugins.credentials.SecretBytes.fromString(secr
 // decrypt a regular secret
 println(hudson.util.Secret.fromString(secret).getPlainText())
 ```
+
+### gcr
+
+``` bash
+#!/usr/bin/env bash
+
+GCR_HOST=${GCR_HOST:-eu.gcr.io}
+GCR_PROJECT=${GCR_PROJECT:-your-project-1234}
+GCR_IMAGE=${GCR_IMAGE:-vendor/name}
+
+# fetch all tags using list-tags, extract using jq and pass to gnu parallel for deletion
+endpoint="${GCR_HOST}/${GCR_PROJECT}/${GCR_IMAGE}"
+gcloud container images list-tags ${endpoint} --format json \
+| jq --raw-output '.[].digest' \
+| parallel --bar --no-keep-order gcloud container images delete ${endpoint}@{} --force-delete-tags
+```
