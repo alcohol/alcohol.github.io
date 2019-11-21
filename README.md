@@ -46,13 +46,29 @@ println(hudson.util.Secret.fromString(secret).getPlainText())
 ``` bash
 #!/usr/bin/env bash
 
-GCR_HOST=${GCR_HOST:-eu.gcr.io}
-GCR_PROJECT=${GCR_PROJECT:-your-project-1234}
-GCR_IMAGE=${GCR_IMAGE:-vendor/name}
+function list_roots
+{
+  gcloud container images list --repository "$1" --format json | \
+  jq --raw-output '.[].name'
+}
 
-# fetch all tags using list-tags, extract using jq and pass to gnu parallel for deletion
-endpoint="${GCR_HOST}/${GCR_PROJECT}/${GCR_IMAGE}"
-gcloud container images list-tags ${endpoint} --format json \
-| jq --raw-output '.[].digest' \
-| parallel --bar --no-keep-order gcloud container images delete ${endpoint}@{} --force-delete-tags
+function list_images
+{
+  gcloud container images list --repository "$1" --format json | \
+  jq --raw-output '.[].name'
+}
+
+function list_tags
+{
+  gcloud container images list-tags "$1" --filter 'timestamp.datetime < 2019-08-01' --format json | \
+  jq --raw-output '.[].digest as $digest | "'$1'@" + $digest'
+}
+
+export -f list_roots list_images list_tags
+
+parallel --no-run-if-empty list_roots ::: eu.gcr.io/project-1234 | \
+parallel --no-run-if-empty list_images | \
+parallel --no-run-if-empty list_tags | \
+parallel --no-run-if-empty --jobs 50 --bar --eta --no-keep-order \
+  gcloud container images delete {} --quiet --force-delete-tags
 ```
