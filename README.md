@@ -72,3 +72,18 @@ parallel --no-run-if-empty list_tags | \
 parallel --no-run-if-empty --jobs 50 --bar --eta --no-keep-order \
   gcloud container images delete {} --quiet --force-delete-tags
 ```
+
+## rsync - move target files preserving directory structure
+
+``` bash
+rsync \
+  --verbose \
+  --archive \
+  --remove-source-files \
+  --prune-empty-dirs \
+  --include '*/' \
+  --include '*.ext' \
+  --exclude '*' \
+  source \
+  destination
+```
